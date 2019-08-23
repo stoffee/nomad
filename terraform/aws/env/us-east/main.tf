@@ -13,6 +13,14 @@ variable "region" {
 
 variable "ami" {}
 
+variable "aws_access_key" {
+  description = "access key"
+}
+
+variable "aws_secret_key" {
+  description = "secret key"
+}
+
 variable "server_instance_type" {
   description = "The AWS instance type to use for servers."
   default     = "t2.medium"
@@ -61,6 +69,8 @@ variable "nomad_binary" {
 
 provider "aws" {
   region = "${var.region}"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
 
 module "hashistack" {
