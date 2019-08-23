@@ -1,3 +1,14 @@
+terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "cdunlap"
+
+    workspaces {
+      name = "nomad"
+    }
+  }
+}
+
 variable "name" {
   description = "Used to name various infrastructure components"
 }
@@ -8,10 +19,11 @@ variable "whitelist_ip" {
 
 variable "region" {
   description = "The AWS region to deploy to."
-  default     = "us-east-1"
+  default     = "us-west-1"
 }
 
-variable "ami" {}
+variable "ami" {
+}
 
 variable "aws_access_key" {
   description = "access key"
@@ -50,10 +62,9 @@ variable "client_count" {
   default     = "4"
 }
 
-
 variable "retry_join" {
   description = "Used by Consul to automatically form a cluster."
-  type        = "map"
+  type        = map(string)
 
   default = {
     provider  = "aws"
@@ -68,7 +79,7 @@ variable "nomad_binary" {
 }
 
 provider "aws" {
-  region = "${var.region}"
+  region     = var.region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
@@ -76,18 +87,18 @@ provider "aws" {
 module "hashistack" {
   source = "../../modules/hashistack"
 
-  name                   = "${var.name}"
-  region                 = "${var.region}"
-  ami                    = "${var.ami}"
-  server_instance_type   = "${var.server_instance_type}"
-  client_instance_type   = "${var.client_instance_type}"
-  key_name               = "${var.key_name}"
-  server_count           = "${var.server_count}"
-  client_count           = "${var.client_count}"
-  retry_join             = "${var.retry_join}"
-  nomad_binary           = "${var.nomad_binary}"
-  root_block_device_size = "${var.root_block_device_size}"
-  whitelist_ip           = "${var.whitelist_ip}"
+  name                   = var.name
+  region                 = var.region
+  ami                    = var.ami
+  server_instance_type   = var.server_instance_type
+  client_instance_type   = var.client_instance_type
+  key_name               = var.key_name
+  server_count           = var.server_count
+  client_count           = var.client_count
+  retry_join             = var.retry_join
+  nomad_binary           = var.nomad_binary
+  root_block_device_size = var.root_block_device_size
+  whitelist_ip           = var.whitelist_ip
 }
 
 output "IP_Addresses" {
@@ -120,4 +131,6 @@ Set the following for access from the Nomad CLI:
   export NOMAD_ADDR=http://${module.hashistack.server_lb_ip}:4646
 
 CONFIGURATION
+
 }
+
