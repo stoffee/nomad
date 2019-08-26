@@ -93,7 +93,7 @@ resource "aws_security_group" "primary" {
     security_groups = [aws_security_group.server_lb.id]
   }
 
-  # Fabio 
+  # Fabio
   ingress {
     from_port   = 9998
     to_port     = 9999
@@ -201,7 +201,7 @@ resource "aws_instance" "server" {
       "Name" = "${var.name}-server-${count.index}"
     },
     {
-      var.retry_join["tag_key"] = var.retry_join["tag_value"]
+      var.retry_join[tag_key] = var.retry_join[tag_value]
     },
   )
 
@@ -228,9 +228,9 @@ resource "aws_instance" "client" {
     {
       "Name" = "${var.name}-client-${count.index}"
     },
-    {
-      var.retry_join["tag_key"] = var.retry_join["tag_value"]
-    },
+  #  {
+  #    var.retry_join["tag_key"] = var.retry_join["tag_value"]
+  #  },
   )
 
   root_block_device {
@@ -323,4 +323,3 @@ output "client_public_ips" {
 output "server_lb_ip" {
   value = aws_elb.server_lb.dns_name
 }
-
