@@ -200,9 +200,9 @@ resource "aws_instance" "server" {
     {
       "Name" = "${var.name}-server-${count.index}"
     },
-    {
-      var.retry_join[tag_key] = var.retry_join[tag_value]
-    },
+  #  {
+  #    var.retry_join[tag_key] = var.retry_join[tag_value]
+  #  },
   )
 
   root_block_device {
